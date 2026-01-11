@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nano Banana Image Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 16px; max-width: 500px; margin: auto; }
+    textarea { width: 100%; height: 100px; }
+    button { padding: 10px 16px; margin-top: 8px; }
+    img { width: 100%; margin-top: 16px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Nano Banana Pro Image Generator</h2>
+  <textarea id="prompt" placeholder="Describe your image..."></textarea>
+  <button onclick="generate()">Generate Image</button>
+  <p id="status"></p>
+  <img id="result" />
+
+  <script>
+    async function generate() {
+      const prompt = document.getElementById("prompt").value.trim();
+      const status = document.getElementById("status");
+      const img = document.getElementById("result");
+      if (!prompt) {
+        status.textContent = "Write a prompt first.";
+        return;
+      }
+      status.textContent = "Generating...";
+      img.src = "";
+
+      try {
+        const res = await fetch("/api/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+        const data = await res.json();
+        if (data.imageBase64) {
+          img.src = "data:image/png;base64," + data.imageBase64;
+          status.textContent = "Done ✅";
+        } else {
+          status.textContent = "No image returned.";
+          console.log(data);
+        }
+      } catch (e) {
+        console.error(e);
+        status.textContent = "Error generating image.";
+      }
+    }
+  </script>
+</body>
+</html>
