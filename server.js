@@ -21,18 +21,18 @@ app.post("/api/generate-image", async (req, res) => {
   }
 
   try {
-    // Call Hugging Face Stable Diffusion model
-    const apiRes = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${HF_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ inputs: prompt }),
-      }
-    );
+    // Call Hugging Face Stable Diffusion using new Router endpoint
+const apiRes = await fetch(
+  "https://router.huggingface.co/models/stabilityai/stable-diffusion-2-1",
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${HF_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ inputs: prompt }),
+  }
+);
 
     if (!apiRes.ok) {
       const errText = await apiRes.text();
